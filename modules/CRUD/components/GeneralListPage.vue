@@ -89,7 +89,7 @@ export default {
   },
   data() {
     return {
-      items: [],
+      items: [], //
       selected: [],
       isCreateEditSheetOpen: false,
       editedUserId: null,
