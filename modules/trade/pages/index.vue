@@ -96,7 +96,7 @@
                   label="Размер ордера"
                 >
                   <flag-text-field
-                    v-model="timurForm.buy.size"
+                    v-model="timurForm.buy_kwargs.size"
                     :height="50"
                     placeholder="Размер ордера"
                   />
@@ -105,7 +105,7 @@
               <v-col cols="3">
                 <form-item label="Предельная цена ордера">
                   <flag-text-field
-                    v-model.number="timurForm.buy.limit"
+                    v-model.number="timurForm.buy_kwargs.limit"
                     help-text="Предельная цена ордера для лимитных ордеров"
                     :height="50"
                     placeholder="Предельная цена ордера"
@@ -118,7 +118,7 @@
                   label="Стоп-цена"
                 >
                   <flag-text-field
-                    v-model="timurForm.buy.stop"
+                    v-model="timurForm.buy_kwargs.stop"
                     :height="50"
                     placeholder="Стоп-цена"
                   />
@@ -130,7 +130,7 @@
                   label="Стоп лос"
                 >
                   <flag-text-field
-                    v-model="timurForm.buy.sl"
+                    v-model="timurForm.buy_kwargs.sl"
                     :height="50"
                     placeholder="sl"
                   />
@@ -142,7 +142,7 @@
                   help-text="Ордер на тейк-профит (T/P) - это тип лимитного ордера, который определяет точную цену, по которой следует закрыть открытую позицию с целью получения прибыли. Если цена ценной бумаги не достигает предельной цены, ордер на тейк-профит не исполняется."
                 >
                   <flag-text-field
-                    v-model="timurForm.buy.tp"
+                    v-model="timurForm.buy_kwargs.tp"
                     :height="50"
                     placeholder="Тейк профит"
                   />
@@ -188,7 +188,7 @@
                   label="Размер ордера"
                 >
                   <flag-text-field
-                    v-model="timurForm.sell.size"
+                    v-model="timurForm.sell_kwargs.size"
                     placeholder="Размер ордера"
                     :height="50"
                   />
@@ -197,7 +197,7 @@
               <v-col cols="3">
                 <form-item label="Предельная цена ордера">
                   <flag-text-field
-                    v-model="timurForm.sell.limit"
+                    v-model="timurForm.sell_kwargs.limit"
                     :height="50"
                     placeholder="Предельная цена ордера"
                   />
@@ -209,7 +209,7 @@
                   label="Стоп-приказ"
                 >
                   <flag-text-field
-                    v-model="timurForm.sell.stop"
+                    v-model="timurForm.sell_kwargs.stop"
                     :height="50"
                     placeholder="Стоп-приказ"
                   />
@@ -221,7 +221,7 @@
                   label="Стоп лос"
                 >
                   <flag-text-field
-                    v-model="timurForm.sell.sl"
+                    v-model="timurForm.sell_kwargs.sl"
                     :height="50"
                     placeholder="Стоп лос"
                   />
@@ -233,7 +233,7 @@
                   help-text="Цена тейк-профита, по которой, если она установлена, новый условный лимитный ордер будет размещен после исполнения Trade этого ордера"
                 >
                   <flag-text-field
-                    v-model="timurForm.sell.tp"
+                    v-model="timurForm.sell_kwargs.tp"
                     :height="50"
                     placeholder="Тейк профит"
                   />
@@ -573,14 +573,14 @@ export default {
           portion: null,
         },
 
-        buy: {
+        buy_kwargs: {
           size: null,
           limit: null,
           stop: null,
           sl: null,
           tp: null,
         },
-        sell: {
+        sell_kwargs: {
           size: null,
           limit: null,
           stop: null,
@@ -603,8 +603,8 @@ export default {
 
     async someTrade(event, needData = false) {
       let copy = JSON.parse(JSON.stringify(this.timurForm))
-      //   copy.buy = {}
-      //   copy.sell = {}
+      //   copy.buy_kwargs = {}
+      //   copy.sell_kwargs = {}
 
       if (this.timurForm.strategy !== 'simple') {
         delete copy.colya
@@ -624,13 +624,13 @@ export default {
       const clearSell = {}
       const clearCloseTrade = {}
 
-      for (const [key, value] of Object.entries(copy.buy)) {
+      for (const [key, value] of Object.entries(copy.buy_kwargs)) {
         if (value === 0 || value) {
           clearBuy[key] = Number.parseFloat(value)
         }
       }
 
-      for (const [key, value] of Object.entries(copy.sell)) {
+      for (const [key, value] of Object.entries(copy.sell_kwargs)) {
         if (value === 0 || value) {
           clearSell[key] = Number.parseFloat(value)
         }
@@ -649,23 +649,18 @@ export default {
       if (needData) {
         return {
           ...copy,
-          buy: clearBuy,
-          sell: clearSell,
+          buy_kwargs: clearBuy,
+          sell_kwargs: clearSell,
           close_trade: clearCloseTrade,
         }
       }
-      console.log({
-        ...copy,
-        buy: clearBuy,
-        sell: clearSell,
-        close_trade: clearCloseTrade,
-      })
+
       const res = await this.$refs.formWrapper.makeRequest(
         async () =>
           await this.$trade.test_strategy({
             ...copy,
-            buy: clearBuy,
-            sell: clearSell,
+            buy_kwargs: clearBuy,
+            sell_kwargs: clearSell,
             close_trade: clearCloseTrade,
             figi: this.selectedFigi,
           })
