@@ -3,6 +3,7 @@
     <!-- eslint-disable vue/valid-v-slot  -->
 
     <v-container>
+      <slot name="top" />
       <v-row v-if="showCreate">
         <v-col class="d-flex" cols="12">
           <v-spacer />
@@ -25,11 +26,9 @@
             /> -->
             <app-form-wrapper ref="formWrapper" :request-errors="[400, 404]">
               <template #default="{ isLoading }">
-                <v-skeleton-loader v-if="$fetchState.pending" type="table" />
-
                 <flag-table
                   v-model="selected"
-                  :loading="isLoading"
+                  :loading="$fetchState.pending || isLoading"
                   show-select
                   :hide-default-footer="true"
                   :items="items"
@@ -87,6 +86,7 @@ export default {
       default: false,
     },
   },
+
   data() {
     return {
       items: [], //
@@ -95,8 +95,10 @@ export default {
       editedUserId: null,
     }
   },
+  fetchOnServer: false,
   async fetch() {
     this.items = await this.repository.index()
+    this.$emit('update-items', this.items)
   },
   computed: {
     innerActions() {

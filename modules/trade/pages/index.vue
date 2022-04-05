@@ -19,7 +19,7 @@
           </v-row>
           <v-row>
             <v-col class="d-flex align-center">
-              <form-item label="Выбор заготовки стратегии">
+              <form-item class="select-start" label="Выбор заготовки стратегии">
                 <flag-select
                   v-model="timurForm.strategy"
                   :items="timurStratagisList"
@@ -534,12 +534,16 @@ export default {
       shares,
       timurStratagisList: [
         {
-          text: 'Пересечение скользящих средних',
+          text: 'Скользящая средняя (Покупка если series1 только что пересекла (выше) series2)',
           value: 'cross',
+          // меньшая пересекает сверху вниз большу покупаем
+          // иначе продаем
         },
         {
-          text: 'Пересечение скользящих средних',
+          text: 'Скользящая средняя (покупаем всегда если series1 выше series2, на пересечении продаем)',
           value: 'signal',
+          // меньшая пересекает снизу вверх большую покупаем
+          // иначе продаем
         },
         {
           text: 'Flexible Custom strategy',
@@ -762,5 +766,8 @@ export default {
 }
 .info-items {
   width: 50%;
+}
+.select-start {
+  max-width: 400px;
 }
 </style>
