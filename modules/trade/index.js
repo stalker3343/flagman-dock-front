@@ -3,7 +3,7 @@ const PortfolioModule = function () {
   this.extendRoutes((routes) => {
     routes.unshift({
       name: 'trade',
-      path: '/trade',
+      path: '/',
       component: resolve(__dirname, 'pages/index.vue'),
     })
   })

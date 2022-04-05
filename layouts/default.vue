@@ -35,6 +35,7 @@
         <v-list-item
           v-for="link in links"
           :key="link.name"
+          exact
           :to="{ name: link.name }"
         >
           <v-list-item-icon>

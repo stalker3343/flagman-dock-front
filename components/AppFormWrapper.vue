@@ -1,6 +1,9 @@
 <template>
   <div>
-    <errors-alert v-if="errors.length" ref="errContainer" :errors="errors" />
+    <!-- <errors-alert v-if="errors.length" ref="errContainer" :errors="errors" /> -->
+    <v-alert v-if="error" ref="errContainer" type="error" class="mb-2">
+      {{ error }}
+    </v-alert>
 
     <slot :isLoading="loading" :isError="errors.length" />
   </div>
@@ -8,11 +11,11 @@
 
 <script>
 import { getErrorInformation } from '@/utils/proccesErrors'
-import ErrorsAlert from '@/components/AppErrorsAlert.vue'
+// import ErrorsAlert from '@/components/AppErrorsAlert.vue'
 
 export default {
   components: {
-    ErrorsAlert,
+    // ErrorsAlert,
   },
   props: {
     requestErrors: {
@@ -28,11 +31,13 @@ export default {
     return {
       loading: false,
       errors: [],
+      error: null,
     }
   },
   methods: {
     async makeRequest(reqestFn, returnError = false) {
       try {
+        this.error = null
         this.errors = []
         this.loading = true
         let res = await reqestFn()
@@ -55,6 +60,9 @@ export default {
               ? { status: false, response: null, error }
               : false
           this.errors = errorsList
+
+          this.error = error.response.data
+
           this.$nextTick(() => {
             this.$scrollIntoView(this.$refs.errContainer.$el)
           })

@@ -5,16 +5,19 @@
         <v-container>
           <v-row>
             <v-col>
-              <v-autocomplete
-                v-model="selectedFigi"
-                item-value="figi"
-                item-text="name"
-                :filter="customFilter"
-                :items="shares"
-                label="Поиск по тикеру или названию компании"
-                color="dark-base"
-                item-color="dark-base"
-              />
+              <v-form ref="form">
+                <v-autocomplete
+                  v-model="selectedFigi"
+                  :rules="innerRules"
+                  item-value="figi"
+                  item-text="name"
+                  :filter="customFilter"
+                  :items="shares"
+                  label="Поиск по тикеру или названию компании"
+                  color="dark-base"
+                  item-color="dark-base"
+                />
+              </v-form>
             </v-col>
           </v-row>
           <v-row>
@@ -596,6 +599,20 @@ export default {
       },
     }
   },
+  computed: {
+    innerRules() {
+      const rules = []
+
+      const validateFn = (value) => {
+        if (!value) return 'Заполните поле'
+
+        return true
+      }
+      rules.push(validateFn)
+
+      return rules
+    },
+  },
   methods: {
     customFilter(item, queryText, itemText) {
       const textOne = item.ticker.toLowerCase()
@@ -606,6 +623,8 @@ export default {
     },
 
     async someTrade(event, needData = false) {
+      const isValid = this.$refs.form.validate()
+      if (!isValid) return
       let copy = JSON.parse(JSON.stringify(this.timurForm))
       //   copy.buy_kwargs = {}
       //   copy.sell_kwargs = {}
@@ -688,6 +707,8 @@ export default {
       this.isSaveStratOpen = true
     },
     async saveStrat() {
+      const isValid = this.$refs.form.validate()
+      if (!isValid) return
       const stratMetaData = await this.someTrade(null, true)
 
       const res = await this.$refs.formWrapperModal.makeRequest(
