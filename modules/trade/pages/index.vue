@@ -652,6 +652,7 @@ export default {
           buy_kwargs: clearBuy,
           sell_kwargs: clearSell,
           close_kwargs: clearCloseTrade,
+          figi: this.selectedFigi,
         }
       }
 
