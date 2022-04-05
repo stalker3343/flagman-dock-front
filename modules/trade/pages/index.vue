@@ -167,7 +167,7 @@
                   label="Доля"
                 >
                   <flag-text-field
-                    v-model="timurForm.close_trade.portion"
+                    v-model="timurForm.close_kwargs.portion"
                     :height="50"
                     placeholder="Доля"
                   />
@@ -569,7 +569,7 @@ export default {
           balance_procent: 0.1,
         },
 
-        close_trade: {
+        close_kwargs: {
           portion: null,
         },
 
@@ -636,14 +636,14 @@ export default {
         }
       }
 
-      for (const [key, value] of Object.entries(copy.close_trade)) {
+      for (const [key, value] of Object.entries(copy.close_kwargs)) {
         if (value === 0 || value) {
           clearCloseTrade[key] = Number.parseFloat(value)
         }
       }
 
-      if (!copy.close_trade.portion) {
-        delete copy.close_trade
+      if (!copy.close_kwargs.portion) {
+        delete copy.close_kwargs
       }
 
       if (needData) {
@@ -651,7 +651,7 @@ export default {
           ...copy,
           buy_kwargs: clearBuy,
           sell_kwargs: clearSell,
-          close_trade: clearCloseTrade,
+          close_kwargs: clearCloseTrade,
         }
       }
 
@@ -661,7 +661,7 @@ export default {
             ...copy,
             buy_kwargs: clearBuy,
             sell_kwargs: clearSell,
-            close_trade: clearCloseTrade,
+            close_kwargs: clearCloseTrade,
             figi: this.selectedFigi,
           })
       )
